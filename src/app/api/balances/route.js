@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBalances, updateBalance } from '@/lib/db';
+import { getBalances, updateBalance, readDb } from '@/lib/db';
 import { isAdminAuthenticated } from '@/lib/auth';
 
 // جلب الأرصدة كلها أو رصيد عسكري محدد
@@ -10,11 +10,25 @@ export async function GET(request) {
     const balances = getBalances();
     
     if (userName) {
-      const userBalance = balances[userName.trim()] || 0;
+      const userBalance = balances[userName.trim()] ?? 0;
       return NextResponse.json({ success: true, balance: userBalance });
     }
-    
-    return NextResponse.json({ success: true, balances });
+
+    // دمج كل العساكر: اللي عندهم رصيد + اللي عملوا أوردرات في أي تاريخ
+    const db = readDb();
+    const allOrders = db.orders || {};
+    const mergedBalances = { ...balances };
+
+    Object.values(allOrders).forEach((dayOrders) => {
+      dayOrders.forEach((order) => {
+        const name = order.userName?.trim();
+        if (name && !(name in mergedBalances)) {
+          mergedBalances[name] = 0;
+        }
+      });
+    });
+
+    return NextResponse.json({ success: true, balances: mergedBalances });
   } catch (error) {
     return NextResponse.json({ success: false, message: 'فشل جلب الأرصدة' }, { status: 500 });
   }

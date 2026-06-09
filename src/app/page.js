@@ -169,13 +169,13 @@ export default function Home() {
 
   const updateCartQty = (productId, newQty) => {
     const qty = Math.max(1, Number(newQty) || 1);
-    setCart(cart.map(item => 
+    setCart(cart.map(item =>
       item.productId === productId ? { ...item, quantity: qty } : item
     ));
   };
 
   const updateCartNotes = (productId, notesText) => {
-    setCart(cart.map(item => 
+    setCart(cart.map(item =>
       item.productId === productId ? { ...item, notes: notesText } : item
     ));
   };
@@ -240,7 +240,7 @@ export default function Home() {
               <p className="name-popup-desc">
                 أهلاً بك في منظومة نجف العسكرية لتأمين وجبات العساكر. اكتب اسمك هنا عشان تظهر كشوفاتك عند القائد ويوافق على طلب فطارك اليوم.
               </p>
-              
+
               <form onSubmit={handleSaveName}>
                 <div className="form-group" style={{ marginBottom: '25px' }}>
                   <input
@@ -268,27 +268,21 @@ export default function Home() {
         <div className="hud-title-container">
           <span className="hud-logo">🎖️</span>
           <div>
-            <h1 className="hud-title">منظومة نجف لعساكر الفطار 🧆</h1>
-            <span className="hud-badge">كتيبة التموين الغذائي - طابور العساكر</span>
+            <h1 className="hud-title">منظومة نجف لفطار العساكر 🧆</h1>
+            <span className="hud-badge">كتيبة التموين الغذائي</span>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           {userName && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-              <span style={{ fontWeight: 'bold' }}>🫡 العسكري: {userName}</span>
-              <button
-                onClick={handleChangeName}
-                style={{ background: 'none', border: 'none', color: 'var(--accent-gold)', fontSize: '0.8rem', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-              >
-                تغيير نوبة العسكري 🔁
-              </button>
+              <span style={{ fontWeight: 'bold' }}>🫡 جندي أح: {userName}</span>
             </div>
           )}
         </div>
       </header>
 
       <div className="page-container">
-        
+
         {/* 2. تنبيه الأرصدة المتبقية (الباقي) */}
         {userName && userBalance !== 0 && (
           <section className="alert-balance-banner">
@@ -312,12 +306,12 @@ export default function Home() {
           <div className="status-indicator">
             <span className={`dot ${config.isOpen ? 'open' : 'closed'}`}></span>
             <span className="status-text">
-              حالة الطابور حالياً: {config.isOpen ? 'مفتوح للاستبسال واطلب فطارك 🔓🥖' : 'مغلق بالأمر السيادي 🔒'}
+              حالة الطلبات: {config.isOpen ? 'مفتوح واطلب فطارك 🔓🥖' : 'مغلق بالأمر السيادي 🔒'}
             </span>
           </div>
           <span className="status-desc" style={{ fontWeight: 'bold' }}>
-            {config.isOpen 
-              ? (config.timeLeftMessage || 'اطلب فطارك قبل إغلاق الباب ⏱️') 
+            {config.isOpen
+              ? (config.timeLeftMessage || 'اطلب فطارك قبل إغلاق الباب ⏱️')
               : '🚫 طابور الفطار بيفتح تلقائياً من 7:00 ص لـ 11:00 ص كل يوم.'
             }
           </span>
@@ -365,7 +359,7 @@ export default function Home() {
         {selectedPlace && (
           <div className="custom-modal-overlay" onClick={() => setSelectedPlace(null)}>
             <div className="custom-modal" style={{ maxWidth: '650px' }} onClick={(e) => e.stopPropagation()}>
-              
+
               <div className="custom-modal-header">
                 <span className="custom-modal-title">🏪 قائمة منتجات: {selectedPlace.name}</span>
                 <button className="custom-modal-close" onClick={() => setSelectedPlace(null)}>×</button>
@@ -393,7 +387,7 @@ export default function Home() {
                               <span className="product-price">{product.price} جنيه</span>
                             </div>
                           </div>
-                          
+
                           <button
                             onClick={() => openCustomizer(product)}
                             className="btn-military btn-military-gold"
@@ -422,7 +416,7 @@ export default function Home() {
               </div>
               <div className="custom-modal-body">
                 <h3 style={{ marginBottom: '15px', textAlign: 'center', color: '#fff' }}>{currentCustomizingProduct.name}</h3>
-                
+
                 <div className="form-group">
                   <label className="form-label">الكمية المطلوبة (العدد)</label>
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -497,7 +491,7 @@ export default function Home() {
         {showCart && (
           <div className="custom-modal-overlay" onClick={() => setShowCart(false)}>
             <div className="custom-modal" style={{ maxWidth: '600px' }} onClick={(e) => e.stopPropagation()}>
-              
+
               <div className="custom-modal-header">
                 <span className="custom-modal-title">🛒 سلة أوردر النهارده العسكرية</span>
                 <button className="custom-modal-close" onClick={() => setShowCart(false)}>×</button>

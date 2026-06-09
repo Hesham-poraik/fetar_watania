@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('orders'); // orders, places, products
+  const [activeTab, setActiveTab] = useState('orders'); // orders, places, products, balances
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   
@@ -14,6 +13,11 @@ export default function AdminDashboard() {
   const [places, setPlaces] = useState([]);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+
+  // أرصدة العملاء
+  const [balances, setBalances] = useState({});
+  const [editingSoldier, setEditingSoldier] = useState(null);
+  const [balanceSearch, setBalanceSearch] = useState('');
   
   // أرصدة وتفاصيل مجمعة للتحليل المالي اليومي
   const [totals, setTotals] = useState({ totalOrdersCount: 0, totalRevenue: 0 });
@@ -48,7 +52,8 @@ export default function AdminDashboard() {
           fetchConfig(),
           fetchPlaces(),
           fetchProducts(),
-          fetchOrders()
+          fetchOrders(),
+          fetchBalances()
         ]);
       } catch (err) {
         console.error('فشل في جلب البيانات الأولية:', err);
@@ -104,6 +109,29 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchBalances = async () => {
+    const res = await fetch('/api/balances');
+    const data = await res.json();
+    if (data.success) setBalances(data.balances);
+  };
+
+  const handleUpdateBalance = async (name, amount) => {
+    try {
+      const res = await fetch('/api/balances', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userName: name, amount: Number(amount) })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setBalances(data.balances);
+        setEditingSoldier(null);
+      }
+    } catch (err) {
+      console.error('فشل تعديل الرصيد:', err);
+    }
+  };
+
   // التحكم في حالة النظام (فتح/إغلاق يدوي)
   const handleConfigChange = async (overrideValue) => {
     try {
@@ -127,6 +155,25 @@ export default function AdminDashboard() {
     if (confirm('هل أنت متأكد من الانصراف يا فندم؟ 🫡')) {
       await fetch('/api/admin/logout', { method: 'POST' });
       router.push('/admin/login');
+    }
+  };
+
+  // فتح مأمورية جديدة (مسح كل الطلبات مع الحفاظ على الأرصدة)
+  const handleNewMission = async () => {
+    if (!confirm('⚠️ انتبه يا قائد! فتح مأمورية جديدة هيحذف كل طلبات المأمورية السابقة نهائياً مع الحفاظ على أرصدة العساكر. موافق؟')) return;
+    try {
+      const res = await fetch('/api/orders/clear', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+        await fetchOrders();
+        await fetchBalances();
+        setActiveTab('orders');
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('فشل تنفيذ أمر المأمورية الجديدة!');
     }
   };
 
@@ -258,6 +305,28 @@ export default function AdminDashboard() {
     }
   };
 
+  // حذف طلب عسكري (للأدمن فقط)
+  const handleDeleteOrder = async (orderId, userName) => {
+    if (!confirm(`⚠️ انتبه يا قائد! هتحذف أوردر العسكري "${userName}" نهائياً من الكشف. موافق؟`)) return;
+
+    try {
+      const res = await fetch('/api/orders/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+        fetchOrders();
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('فشل تنفيذ أمر الحذف للطلب!');
+    }
+  };
+
   // تحديث الدفع والـ Paid Amount لعسكري
   const handleUpdatePayment = async (orderId, totalCost) => {
     const inputVal = paymentInputs[orderId];
@@ -353,9 +422,9 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-          <Link href="/admin/balances" className="btn-military btn-military-primary" style={{ textDecoration: 'none' }}>
-            💰 صفحة رصيد العملاء
-          </Link>
+          <button onClick={handleNewMission} className="btn-military btn-military-gold">
+            🏆 فتح مأمورية جديدة
+          </button>
           <button onClick={handleLogout} className="btn-military btn-military-danger">
             انصراف من الخدمة 🚪
           </button>
@@ -414,8 +483,20 @@ export default function AdminDashboard() {
             <span className="stat-value green">{totals.totalRevenue} جنيه</span>
           </div>
           <div className="stat-card">
-            <span className="stat-title">تعداد كتائب الأكل (المحلات) 🏪</span>
-            <span className="stat-value">{places.length} مطعم</span>
+            <span className="stat-title">أماكن الأكل 🏪</span>
+            <span className="stat-value">{places.length} مكان</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-title">عليهم مديونية 🔴</span>
+            <span className="stat-value" style={{ color: 'var(--accent-red)' }}>
+              {Object.values(balances).filter(b => b < 0).length} عسكري
+            </span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-title">ليهم باقي عندنا 🟢</span>
+            <span className="stat-value" style={{ color: 'var(--accent-green)' }}>
+              {Object.values(balances).filter(b => b > 0).length} عسكري
+            </span>
           </div>
         </section>
 
@@ -431,13 +512,19 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('places')}
             className={`admin-tab ${activeTab === 'places' ? 'active' : ''}`}
           >
-            🏪 كتائب الأكل (المحلات)
+            🏪 أماكن الأكل (المحلات)
           </button>
           <button
             onClick={() => setActiveTab('products')}
             className={`admin-tab ${activeTab === 'products' ? 'active' : ''}`}
           >
-            🍔 ترسانة الذخيرة (المنتجات)
+            🍔 الحجات اللي ممكن تنطلب (المنتجات)
+          </button>
+          <button
+            onClick={() => setActiveTab('balances')}
+            className={`admin-tab ${activeTab === 'balances' ? 'active' : ''}`}
+          >
+            💰 رصيد العملاء
           </button>
         </nav>
 
@@ -465,6 +552,7 @@ export default function AdminDashboard() {
                         <th>المبلغ المدفوع 💵</th>
                         <th>الباقي للعسكري 💸</th>
                         <th>تأكيد الحساب 🫡</th>
+                        <th>حذف الأمر 🗑️</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -509,6 +597,15 @@ export default function AdminDashboard() {
                                 style={{ padding: '6px 12px', fontSize: '0.85rem' }}
                               >
                                 سجل الدفعة ✏️
+                              </button>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => handleDeleteOrder(order.id, order.userName)}
+                                className="btn-military btn-military-danger"
+                                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                              >
+                                احذف 🗑️
                               </button>
                             </td>
                           </tr>
@@ -654,7 +751,7 @@ export default function AdminDashboard() {
 
               {/* قائمة المحلات المضافة */}
               <div>
-                <h3 style={{ marginBottom: '15px' }}>🏪 كتائب الأكل المعتمدة حالياً في المنظومة</h3>
+                <h3 style={{ marginBottom: '15px' }}>🏪 أماكن الأكل المعتمدة حالياً في المنظومة</h3>
                 {places.length === 0 ? (
                   <p style={{ color: 'var(--text-secondary)' }}>مفيش مطاعم مضافة حالياً. أضف مطعم لفتح التموين!</p>
                 ) : (
@@ -788,7 +885,7 @@ export default function AdminDashboard() {
                   const placeProducts = products.filter(p => p.placeId === place.id);
                   return (
                     <div key={place.id} style={{ marginBottom: '35px', background: 'rgba(255,255,255,0.01)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
-                      <h4 style={{ color: var(--accent-gold), marginBottom: '15px', borderBottom: '1px dashed var(--border-glass)', paddingBottom: '8px' }}>
+                      <h4 style={{ color: 'var(--accent-gold)', marginBottom: '15px', borderBottom: '1px dashed var(--border-glass)', paddingBottom: '8px' }}>
                         🏪 {place.name} ({placeProducts.length} أصناف)
                       </h4>
 
@@ -826,6 +923,120 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+        {/* تبويب رصيد العملاء */}
+        {activeTab === 'balances' && (() => {
+          const allSoldiers = Object.keys(balances).sort((a, b) => {
+            const ba = balances[a], bb = balances[b];
+            if (ba < 0 && bb >= 0) return -1;
+            if (bb < 0 && ba >= 0) return 1;
+            return ba - bb;
+          });
+          const filtered = allSoldiers.filter(n =>
+            n.toLowerCase().includes(balanceSearch.toLowerCase())
+          );
+          return (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
+                <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  💰 كشف الحسابات العام والأرصدة
+                </h2>
+                <input
+                  type="text"
+                  className="form-input"
+                  style={{ maxWidth: '280px' }}
+                  placeholder="🔍 ابحث عن عسكري..."
+                  value={balanceSearch}
+                  onChange={e => setBalanceSearch(e.target.value)}
+                />
+              </div>
+
+              <div className="table-responsive">
+                <table className="nagaf-table">
+                  <thead>
+                    <tr>
+                      <th>اسم العسكري 🪖</th>
+                      <th>الحالة المالية 📊</th>
+                      <th>الرصيد الحالي 💰</th>
+                      <th>تعديل الرصيد ✏️</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.length === 0 ? (
+                      <tr>
+                        <td colSpan="4" style={{ textAlign: 'center', padding: '30px' }}>
+                          {balanceSearch ? 'مفيش عسكري بالاسم ده في الكشف!' : '📭 الكشف فاضي - مفيش عساكر طلبوا لحد دلوقتي!'}
+                        </td>
+                      </tr>
+                    ) : (
+                      filtered.map(name => {
+                        const balance = balances[name];
+                        const isEditing = editingSoldier?.name === name;
+                        return (
+                          <tr key={name}>
+                            <td style={{ fontWeight: '800' }}>{name}</td>
+                            <td>
+                              {balance > 0 ? (
+                                <span style={{ color: 'var(--accent-green)', fontWeight: 'bold' }}>🟢 ليه باقي عندنا</span>
+                              ) : balance < 0 ? (
+                                <span style={{ color: 'var(--accent-red)', fontWeight: 'bold' }}>🔴 عليه مديونية</span>
+                              ) : (
+                                <span style={{ color: 'var(--text-muted)' }}>⚪ خالص</span>
+                              )}
+                            </td>
+                            <td style={{ fontWeight: '900', fontSize: '1.1rem' }}>
+                              {isEditing ? (
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  style={{ width: '120px', padding: '6px 10px', textAlign: 'center' }}
+                                  value={editingSoldier.amount}
+                                  onChange={e => setEditingSoldier(prev => ({ ...prev, amount: e.target.value }))}
+                                  autoFocus
+                                />
+                              ) : (
+                                <span style={{ color: balance > 0 ? 'var(--accent-green)' : balance < 0 ? 'var(--accent-red)' : '#fff' }}>
+                                  {balance} جنيه
+                                </span>
+                              )}
+                            </td>
+                            <td>
+                              {isEditing ? (
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button
+                                    onClick={() => handleUpdateBalance(name, editingSoldier.amount)}
+                                    className="btn-military btn-military-gold"
+                                    style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                                  >
+                                    حفظ ✅
+                                  </button>
+                                  <button
+                                    onClick={() => setEditingSoldier(null)}
+                                    className="btn-military btn-military-secondary"
+                                    style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                                  >
+                                    إلغاء ❌
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => setEditingSoldier({ name, amount: balance })}
+                                  className="btn-military btn-military-secondary"
+                                  style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                                >
+                                  عدل الرصيد 💰
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })()}
 
       </div>
     </div>

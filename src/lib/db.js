@@ -197,6 +197,16 @@ export function updateOrderPayment(orderId, paidAmount, date = getTodayDateStrin
   return updatedOrder;
 }
 
+// حذف طلب عسكري بالكامل (للأدمن)
+export function deleteOrder(orderId, date = getTodayDateString()) {
+  const db = readDb();
+  if (!db.orders || !db.orders[date]) return false;
+
+  db.orders[date] = db.orders[date].filter(order => order.id !== orderId);
+  writeDb(db);
+  return true;
+}
+
 // جلب أرصدة العملاء
 export function getBalances() {
   const db = readDb();

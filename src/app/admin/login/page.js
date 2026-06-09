@@ -103,7 +103,7 @@ export default function AdminLogin() {
               <div style={{
                 backgroundColor: 'rgba(255, 77, 79, 0.1)',
                 border: '1px solid var(--accent-red)',
-                color: var(--accent-red),
+                color: 'var(--accent-red)',
                 padding: '10px',
                 borderRadius: '8px',
                 marginBottom: '20px',
@@ -118,7 +118,7 @@ export default function AdminLogin() {
               <div style={{
                 backgroundColor: 'rgba(57, 231, 95, 0.1)',
                 border: '1px solid var(--accent-green)',
-                color: var(--accent-green),
+                color: 'var(--accent-green)',
                 padding: '10px',
                 borderRadius: '8px',
                 marginBottom: '20px',
