@@ -1,0 +1,81 @@
+{
+  "places": [
+    {
+      "id": "place_1",
+      "name": "كتيبة الفول والتميس 🧆",
+      "image": "",
+      "enabled": true
+    },
+    {
+      "id": "place_2",
+      "name": "شاورما الصاعقة المدوية 🌯",
+      "image": "",
+      "enabled": true
+    },
+    {
+      "id": "place_3",
+      "name": "كافتيريا المدفعية للمشروبات والذخيرة ☕",
+      "image": "",
+      "enabled": true
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_1",
+      "placeId": "place_1",
+      "name": "ديناميت فول بالزيت الحار 💣",
+      "image": "",
+      "price": 10
+    },
+    {
+      "id": "prod_2",
+      "placeId": "place_1",
+      "name": "غمزة طعمية محشية شطة 🔥",
+      "image": "",
+      "price": 8
+    },
+    {
+      "id": "prod_3",
+      "placeId": "place_1",
+      "name": "طلب بطاطس طابور الصباح 🍟",
+      "image": "",
+      "price": 12
+    },
+    {
+      "id": "prod_4",
+      "placeId": "place_2",
+      "name": "شاورما دجاج برتبة عقيد 🍗",
+      "image": "",
+      "price": 45
+    },
+    {
+      "id": "prod_5",
+      "placeId": "place_2",
+      "name": "صاروخ لحمة فدائي 🚀",
+      "image": "",
+      "price": 55
+    },
+    {
+      "id": "prod_6",
+      "placeId": "place_3",
+      "name": "شاي أحمر ثقيل تعمير مخ ☕",
+      "image": "",
+      "price": 6
+    },
+    {
+      "id": "prod_7",
+      "placeId": "place_3",
+      "name": "قهوة سادة عسكري مستجد ☕",
+      "image": "",
+      "price": 10
+    }
+  ],
+  "orders": {},
+  "balances": {
+    "العسكري مصطفى شحاته": 15,
+    "العسكري عبد السميع لغز": -10
+  },
+  "config": {
+    "manualOverride": null
+  }
+}
