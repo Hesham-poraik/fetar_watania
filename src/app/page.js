@@ -104,7 +104,7 @@ export default function Home() {
   const handleSaveName = (e) => {
     e.preventDefault();
     if (!tempName.trim()) {
-      alert('اكتب اسمك يا عسكري، الهروب من كشف الفطار خيانة! 🪖');
+      window.customAlert('اكتب اسمك يا عسكري، الهروب من كشف الفطار خيانة! 🪖');
       return;
     }
 
@@ -116,8 +116,8 @@ export default function Home() {
   };
 
   // تغيير الاسم المسجل (انصراف وتغيير نوبة)
-  const handleChangeName = () => {
-    if (confirm('هل تريد تغيير الاسم وتسجيل اسم عسكري آخر؟')) {
+  const handleChangeName = async () => {
+    if (await window.customConfirm('هل تريد تغيير الاسم وتسجيل اسم عسكري آخر؟')) {
       localStorage.removeItem('nagaf_soldier_name');
       setUserName('');
       setTempName('');
@@ -205,6 +205,7 @@ export default function Home() {
       if (res.ok && data.success) {
         setOrderFeedback({ type: 'success', message: data.message });
         setCart([]); // تصفير السلة بعد النجاح
+        fetchUserBalance(userName); // تحديث الرصيد فوراً بعد الطلب
         setTimeout(() => {
           setShowCart(false);
           setOrderFeedback({ type: '', message: '' });
@@ -276,6 +277,9 @@ export default function Home() {
           {userName && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
               <span style={{ fontWeight: 'bold' }}>🫡 جندي أح: {userName}</span>
+              <span style={{ fontSize: '0.9rem', color: userBalance > 0 ? 'var(--accent-green)' : userBalance < 0 ? 'var(--accent-red)' : 'var(--text-secondary)', fontWeight: '800' }}>
+                الرصيد الحالي: {userBalance} جنيه
+              </span>
             </div>
           )}
         </div>
@@ -284,17 +288,24 @@ export default function Home() {
       <div className="page-container">
 
         {/* 2. تنبيه الأرصدة المتبقية (الباقي) */}
-        {userName && userBalance !== 0 && (
-          <section className="alert-balance-banner">
-            <span style={{ fontSize: '2.5rem' }}>💰</span>
+        {userName && (
+          <section className="alert-balance-banner" style={{ 
+            background: userBalance === 0 ? 'linear-gradient(135deg, rgba(57, 231, 95, 0.1) 0%, rgba(85, 107, 47, 0.15) 100%)' : undefined,
+            borderColor: userBalance === 0 ? 'var(--accent-green)' : 'var(--accent-gold)'
+          }}>
+            <span style={{ fontSize: '2.5rem' }}>{userBalance === 0 ? '⚖️' : '💰'}</span>
             <div className="alert-balance-text">
               {userBalance > 0 ? (
                 <>
-                  انتباه يا جنرال! ليك باقي أمانات في الخزنة قدره <span>{userBalance} جنيه</span>. روح اطلب فطارك وخصمهم من الحساب عند الاستلام! 💸🫡
+                  انتباه يا جنرال! ليك باقي أمانات في الخزنة قدره <span style={{color: 'var(--accent-green)'}}>{userBalance} جنيه</span>. روح اطلب فطارك وخصمهم من الحساب عند الاستلام! 💸🫡
+                </>
+              ) : userBalance < 0 ? (
+                <>
+                  ⚠️ انذار عسكري عاجل! عليك مديونية عجز مستحقة قدرها <span style={{color: 'var(--accent-red)'}}>{Math.abs(userBalance)} جنيه</span>. سدد العجز فوراً في الخزنة لتجنب المحاكمة العسكرية! 🚨🪖
                 </>
               ) : (
                 <>
-                  ⚠️ انذار عسكري عاجل! عليك مديونية عجز مستحقة قدرها <span>{Math.abs(userBalance)} جنيه</span>. سدد العجز فوراً في الخزنة لتجنب المحاكمة العسكرية! 🚨🪖
+                  موقفك المالي سليم 100%! رصيدك في الخزنة <span style={{color: 'var(--accent-green)'}}>0 جنيه</span> (لا ليك ولا عليك). استمر في الخدمة يا بطل! 🟢🫡
                 </>
               )}
             </div>

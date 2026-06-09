@@ -140,15 +140,18 @@ export function submitOrder(userName, items) {
   const today = getTodayDateString();
   if (!db.orders[today]) db.orders[today] = [];
 
-  // إزالة الطلب القديم لنفس العسكري إن وجد
-  db.orders[today] = db.orders[today].filter(o => o.userName.trim().toLowerCase() !== userName.trim().toLowerCase());
+  const cleanUserName = userName.trim();
 
-  // حساب إجمالي الطلب
+  // حساب إجمالي الطلب الجديد
   const totalCost = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  // خصم التكلفة الجديدة فوراً من رصيد العسكري
+  if (!db.balances) db.balances = {};
+  db.balances[cleanUserName] = (Number(db.balances[cleanUserName]) || 0) - totalCost;
 
   const newOrder = {
     id: 'order_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
-    userName: userName.trim(),
+    userName: cleanUserName,
     items: items.map(item => ({
       productId: item.productId,
       name: item.name,
@@ -158,8 +161,8 @@ export function submitOrder(userName, items) {
       quantity: Number(item.quantity) || 1,
       notes: item.notes || ''
     })),
-    paidAmount: 0, // يملأه الأدمن لاحقاً
-    change: 0, // يتم حسابه لاحقاً
+    paidAmount: 0, 
+    change: -totalCost,
     totalCost: totalCost,
     timestamp: new Date().toISOString()
   };
@@ -177,17 +180,24 @@ export function updateOrderPayment(orderId, paidAmount, date = getTodayDateStrin
   let updatedOrder = null;
   db.orders[date] = db.orders[date].map(order => {
     if (order.id === orderId) {
-      const paid = Number(paidAmount) || 0;
-      const change = paid - order.totalCost;
+      const newPaid = Number(paidAmount) || 0;
+      const oldPaid = order.paidAmount || 0;
+      
+      const paidDifference = newPaid - oldPaid;
+      
+      // تحديث الرصيد بناءً على الفرق في المبلغ المدفوع فقط
+      if (paidDifference !== 0) {
+        if (!db.balances) db.balances = {};
+        const userName = order.userName.trim();
+        db.balances[userName] = (db.balances[userName] || 0) + paidDifference;
+      }
+
       updatedOrder = {
         ...order,
-        paidAmount: paid,
-        change: change
+        paidAmount: newPaid,
+        change: newPaid - order.totalCost
       };
       
-      // تحديث الرصيد تلقائياً إذا كان هناك باقي للعسكري
-      // إذا دفع العسكري أكثر مما عليه، الباقي يضاف لرصيده
-      // وإذا كان الرصيد يحتاج تحديث، الأدمن يمكنه تعديله أيضاً يدوياً في صفحة الأرصدة
       return updatedOrder;
     }
     return order;
@@ -201,6 +211,15 @@ export function updateOrderPayment(orderId, paidAmount, date = getTodayDateStrin
 export function deleteOrder(orderId, date = getTodayDateString()) {
   const db = readDb();
   if (!db.orders || !db.orders[date]) return false;
+
+  const orderToDelete = db.orders[date].find(o => o.id === orderId);
+  if (orderToDelete) {
+    if (!db.balances) db.balances = {};
+    const userName = orderToDelete.userName.trim();
+    // التراجع عن تأثير الطلب على الرصيد
+    // بنرجع تكلفة الأوردر بس للرصيد.. الفلوس الكاش اللي العسكري دفعها بتفضل محفوظة في رصيده!
+    db.balances[userName] = (Number(db.balances[userName]) || 0) + orderToDelete.totalCost;
+  }
 
   db.orders[date] = db.orders[date].filter(order => order.id !== orderId);
   writeDb(db);

@@ -1,4 +1,5 @@
 import "./globals.css";
+import CustomAlertProvider from "@/components/CustomAlertProvider";
 
 export const metadata = {
   title: "منظومة نجف لعساكر الفطار 🫡🧆",
@@ -11,7 +12,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body>{children}</body>
+      <body>
+        <CustomAlertProvider>
+          {children}
+        </CustomAlertProvider>
+      </body>
     </html>
   );
 }

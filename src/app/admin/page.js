@@ -132,6 +132,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleResetAllBalances = async () => {
+    if (!(await window.customConfirm('⚠️ تحذير خطير: هل أنت متأكد إنك عايز تصفر وتمسح أرصدة كل العساكر؟ (العملية دي هترجع كل الحسابات لصفر 0)'))) return;
+    
+    try {
+      const res = await fetch('/api/balances/reset', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        window.customAlert(data.message);
+        fetchBalances();
+      } else {
+        window.customAlert(data.message);
+      }
+    } catch (err) {
+      window.customAlert('فشل تصفير الحسابات!');
+    }
+  };
+
   // التحكم في حالة النظام (فتح/إغلاق يدوي)
   const handleConfigChange = async (overrideValue) => {
     try {
@@ -142,17 +159,17 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (res.ok) {
-        alert(data.message);
+        window.customAlert(data.message);
         fetchConfig();
       }
     } catch (err) {
-      alert('حدث خطأ أثناء تعديل إعدادات فتح وإغلاق الطابور!');
+      window.customAlert('حدث خطأ أثناء تعديل إعدادات فتح وإغلاق الطابور!');
     }
   };
 
   // تسجيل الخروج العسكري
   const handleLogout = async () => {
-    if (confirm('هل أنت متأكد من الانصراف يا فندم؟ 🫡')) {
+    if (await window.customConfirm('هل أنت متأكد من الانصراف يا فندم؟ 🫡')) {
       await fetch('/api/admin/logout', { method: 'POST' });
       router.push('/admin/login');
     }
@@ -160,20 +177,20 @@ export default function AdminDashboard() {
 
   // فتح مأمورية جديدة (مسح كل الطلبات مع الحفاظ على الأرصدة)
   const handleNewMission = async () => {
-    if (!confirm('⚠️ انتبه يا قائد! فتح مأمورية جديدة هيحذف كل طلبات المأمورية السابقة نهائياً مع الحفاظ على أرصدة العساكر. موافق؟')) return;
+    if (!(await window.customConfirm('⚠️ انتبه يا قائد! فتح مأمورية جديدة هيحذف كل طلبات المأمورية السابقة نهائياً مع الحفاظ على أرصدة العساكر. موافق؟'))) return;
     try {
       const res = await fetch('/api/orders/clear', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        window.customAlert(data.message);
         await fetchOrders();
         await fetchBalances();
         setActiveTab('orders');
       } else {
-        alert(data.message);
+        window.customAlert(data.message);
       }
     } catch (err) {
-      alert('فشل تنفيذ أمر المأمورية الجديدة!');
+      window.customAlert('فشل تنفيذ أمر المأمورية الجديدة!');
     }
   };
 
@@ -192,10 +209,10 @@ export default function AdminDashboard() {
       if (data.success) {
         setPlaceForm(prev => ({ ...prev, image: data.url }));
       } else {
-        alert(data.message);
+        window.customAlert(data.message);
       }
     } catch (err) {
-      alert('فشل رفع الصورة للأسف!');
+      window.customAlert('فشل رفع الصورة للأسف!');
     } finally {
       setPlaceUploading(false);
     }
@@ -216,10 +233,10 @@ export default function AdminDashboard() {
       if (data.success) {
         setProductForm(prev => ({ ...prev, image: data.url }));
       } else {
-        alert(data.message);
+        window.customAlert(data.message);
       }
     } catch (err) {
-      alert('فشل رفع الصورة للأسف!');
+      window.customAlert('فشل رفع الصورة للأسف!');
     } finally {
       setProductUploading(false);
     }
@@ -240,10 +257,10 @@ export default function AdminDashboard() {
       if (data.success) {
         setPlaces(data.places);
         setPlaceForm({ id: '', name: '', image: '', enabled: true });
-        alert('🎉 تم حفظ بيانات المحل بنجاح يا فندم!');
+        window.customAlert('🎉 تم حفظ بيانات المحل بنجاح يا فندم!');
       }
     } catch (err) {
-      alert('فشل حفظ المحل!');
+      window.customAlert('فشل حفظ المحل!');
     }
   };
 
@@ -251,7 +268,7 @@ export default function AdminDashboard() {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     if (!productForm.name || !productForm.placeId || !productForm.price) {
-      alert('انتبه يا قائد! املأ جميع بيانات المنتج الأول!');
+      window.customAlert('انتبه يا قائد! املأ جميع بيانات المنتج الأول!');
       return;
     }
 
@@ -265,49 +282,49 @@ export default function AdminDashboard() {
       if (data.success) {
         setProducts(data.products);
         setProductForm({ id: '', name: '', price: '', image: '', placeId: places[0]?.id || '' });
-        alert('🎉 تم إضافة الصنف العسكري الجديد لترسانة الأكل بنجاح!');
+        window.customAlert('🎉 تم إضافة الصنف العسكري الجديد لترسانة الأكل بنجاح!');
       }
     } catch (err) {
-      alert('فشل حفظ المنتج!');
+      window.customAlert('فشل حفظ المنتج!');
     }
   };
 
   // حذف محل
   const handleDeletePlace = async (id) => {
-    if (confirm('⚠️ انتباه يا قائد! حذف المحل هيحذف كل المنتجات اللي فيه نهائياً، موافق؟')) {
+    if (await window.customConfirm('⚠️ انتباه يا قائد! حذف المحل هيحذف كل المنتجات اللي فيه نهائياً، موافق؟')) {
       try {
         const res = await fetch(`/api/places?id=${id}`, { method: 'DELETE' });
         const data = await res.json();
         if (data.success) {
           setPlaces(data.places);
           setProducts(data.products);
-          alert('🪓 تم مسح المحل وإبادة منتجاته بنجاح!');
+          window.customAlert('🪓 تم مسح المحل وإبادة منتجاته بنجاح!');
         }
       } catch (err) {
-        alert('فشل الحذف!');
+        window.customAlert('فشل الحذف!');
       }
     }
   };
 
   // حذف منتج
   const handleDeleteProduct = async (id) => {
-    if (confirm('هل تريد حذف هذا الصنف من الإمداد؟')) {
+    if (await window.customConfirm('هل تريد حذف هذا الصنف من الإمداد؟')) {
       try {
         const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
         const data = await res.json();
         if (data.success) {
           setProducts(data.products);
-          alert('🗑️ تم التخلص من المنتج بنجاح!');
+          window.customAlert('🗑️ تم التخلص من المنتج بنجاح!');
         }
       } catch (err) {
-        alert('فشل الحذف!');
+        window.customAlert('فشل الحذف!');
       }
     }
   };
 
   // حذف طلب عسكري (للأدمن فقط)
   const handleDeleteOrder = async (orderId, userName) => {
-    if (!confirm(`⚠️ انتبه يا قائد! هتحذف أوردر العسكري "${userName}" نهائياً من الكشف. موافق؟`)) return;
+    if (!(await window.customConfirm(`⚠️ انتبه يا قائد! هتحذف أوردر العسكري "${userName}" نهائياً من الكشف. موافق؟`))) return;
 
     try {
       const res = await fetch('/api/orders/delete', {
@@ -317,13 +334,14 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        window.customAlert(data.message);
         fetchOrders();
+        fetchBalances();
       } else {
-        alert(data.message);
+        window.customAlert(data.message);
       }
     } catch (err) {
-      alert('فشل تنفيذ أمر الحذف للطلب!');
+      window.customAlert('فشل تنفيذ أمر الحذف للطلب!');
     }
   };
 
@@ -340,13 +358,14 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        alert(data.message);
+        window.customAlert(data.message);
         fetchOrders();
+        fetchBalances();
       } else {
-        alert(data.message);
+        window.customAlert(data.message);
       }
     } catch (err) {
-      alert('فشل تحديث بيانات الحساب للطلب!');
+      window.customAlert('فشل تحديث بيانات الحساب للطلب!');
     }
   };
 
@@ -489,13 +508,13 @@ export default function AdminDashboard() {
           <div className="stat-card">
             <span className="stat-title">عليهم مديونية 🔴</span>
             <span className="stat-value" style={{ color: 'var(--accent-red)' }}>
-              {Object.values(balances).filter(b => b < 0).length} عسكري
+              {Object.values(balances).filter(b => Number(b) < 0).length} عسكري
             </span>
           </div>
           <div className="stat-card">
             <span className="stat-title">ليهم باقي عندنا 🟢</span>
             <span className="stat-value" style={{ color: 'var(--accent-green)' }}>
-              {Object.values(balances).filter(b => b > 0).length} عسكري
+              {Object.values(balances).filter(b => Number(b) > 0).length} عسكري
             </span>
           </div>
         </section>
@@ -550,14 +569,18 @@ export default function AdminDashboard() {
                         <th>الذخيرة المطلوبة (الأصناف) 🍔</th>
                         <th>الحساب المطلوب 💰</th>
                         <th>المبلغ المدفوع 💵</th>
-                        <th>الباقي للعسكري 💸</th>
+                        <th>الرصيد الكلي للعسكري 💸</th>
                         <th>تأكيد الحساب 🫡</th>
                         <th>حذف الأمر 🗑️</th>
                       </tr>
                     </thead>
                     <tbody>
                       {orders.map((order) => {
-                        const change = (Number(paymentInputs[order.id]) || 0) - order.totalCost;
+                        const newPaid = Number(paymentInputs[order.id]) || 0;
+                        const oldPaid = Number(order.paidAmount) || 0;
+                        const currentUserBalance = Number(balances[order.userName.trim()]) || 0;
+                        const expectedBalance = currentUserBalance + (newPaid - oldPaid);
+                        
                         return (
                           <tr key={order.id}>
                             <td style={{ fontWeight: '800' }}>{order.userName}</td>
@@ -587,8 +610,8 @@ export default function AdminDashboard() {
                                 placeholder="دفع كام؟"
                               />
                             </td>
-                            <td style={{ fontWeight: '700', color: change > 0 ? 'var(--accent-green)' : change < 0 ? 'var(--accent-red)' : '#fff' }}>
-                              {change > 0 ? `له باقي: ${change} ج` : change < 0 ? `عليه: ${Math.abs(change)} ج` : 'خالص'}
+                            <td style={{ fontWeight: '700', color: expectedBalance > 0 ? 'var(--accent-green)' : expectedBalance < 0 ? 'var(--accent-red)' : '#fff' }}>
+                              {expectedBalance > 0 ? `له باقي: ${expectedBalance} ج` : expectedBalance < 0 ? `عليه: ${Math.abs(expectedBalance)} ج` : 'خالص (0)'}
                             </td>
                             <td>
                               <button
@@ -940,14 +963,23 @@ export default function AdminDashboard() {
                 <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   💰 كشف الحسابات العام والأرصدة
                 </h2>
-                <input
-                  type="text"
-                  className="form-input"
-                  style={{ maxWidth: '280px' }}
-                  placeholder="🔍 ابحث عن عسكري..."
-                  value={balanceSearch}
-                  onChange={e => setBalanceSearch(e.target.value)}
-                />
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={handleResetAllBalances}
+                    className="btn-military btn-military-danger"
+                    style={{ padding: '8px 16px', fontSize: '0.9rem' }}
+                  >
+                    تصفير كل الحسابات 🧹
+                  </button>
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ maxWidth: '280px' }}
+                    placeholder="🔍 ابحث عن عسكري..."
+                    value={balanceSearch}
+                    onChange={e => setBalanceSearch(e.target.value)}
+                  />
+                </div>
               </div>
 
               <div className="table-responsive">

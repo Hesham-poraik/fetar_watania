@@ -70,38 +70,7 @@
       "price": 10
     }
   ],
-  "orders": {
-    "2026-06-09": [
-      {
-        "id": "order_1781019312981_c1srk",
-        "userName": "هشام بريك",
-        "items": [
-          {
-            "productId": "prod_1",
-            "name": "ديناميت فول بالزيت الحار 💣",
-            "placeId": "place_1",
-            "placeName": "كتيبة الفول والتميس 🧆",
-            "price": 10,
-            "quantity": 2,
-            "notes": "فول سادة"
-          },
-          {
-            "productId": "prod_4",
-            "name": "شاورما دجاج برتبة عقيد 🍗",
-            "placeId": "place_2",
-            "placeName": "شاورما الصاعقة المدوية 🌯",
-            "price": 45,
-            "quantity": 3,
-            "notes": "بس"
-          }
-        ],
-        "paidAmount": 200,
-        "change": 45,
-        "totalCost": 155,
-        "timestamp": "2026-06-09T15:35:12.981Z"
-      }
-    ]
-  },
+  "orders": {},
   "balances": {
     "هشام بريك": 0
   },
