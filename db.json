@@ -1,80 +1,399 @@
 {
   "places": [
     {
-      "id": "place_1",
-      "name": "كتيبة الفول والتميس 🧆",
+      "id": "place_1781026711871",
+      "name": "مطعم نجف",
       "image": "",
       "enabled": true
     },
     {
-      "id": "place_2",
-      "name": "شاورما الصاعقة المدوية 🌯",
+      "id": "place_1781026725219",
+      "name": "السوبر مركت",
       "image": "",
       "enabled": true
     },
     {
-      "id": "place_3",
-      "name": "كافتيريا المدفعية للمشروبات والذخيرة ☕",
+      "id": "place_1781026742712",
+      "name": "فرن العيش",
       "image": "",
       "enabled": true
     }
   ],
   "products": [
     {
-      "id": "prod_1",
-      "placeId": "place_1",
-      "name": "ديناميت فول بالزيت الحار 💣",
+      "id": "prod_1781026815832",
+      "name": "ساندوتش طعمية",
+      "price": 12,
       "image": "",
-      "price": 10
+      "placeId": "place_1781026711871"
     },
     {
-      "id": "prod_2",
-      "placeId": "place_1",
-      "name": "غمزة طعمية محشية شطة 🔥",
+      "id": "prod_1781026824048",
+      "name": "ساندوتش فول",
+      "price": 12,
       "image": "",
-      "price": 8
+      "placeId": "place_1781026711871"
     },
     {
-      "id": "prod_3",
-      "placeId": "place_1",
-      "name": "طلب بطاطس طابور الصباح 🍟",
+      "id": "prod_1781026855694",
+      "name": "شيبسي",
+      "price": 10,
       "image": "",
-      "price": 12
+      "placeId": "place_1781026725219"
     },
     {
-      "id": "prod_4",
-      "placeId": "place_2",
-      "name": "شاورما دجاج برتبة عقيد 🍗",
+      "id": "prod_1781026905337",
+      "name": "جهينا عصير",
+      "price": 10,
       "image": "",
-      "price": 45
+      "placeId": "place_1781026725219"
     },
     {
-      "id": "prod_5",
-      "placeId": "place_2",
-      "name": "صاروخ لحمة فدائي 🚀",
+      "id": "prod_1781026915225",
+      "name": "جهينا مكس",
+      "price": 15,
       "image": "",
-      "price": 55
+      "placeId": "place_1781026725219"
     },
     {
-      "id": "prod_6",
-      "placeId": "place_3",
-      "name": "شاي أحمر ثقيل تعمير مخ ☕",
+      "id": "prod_1781026927258",
+      "name": "سان توب",
+      "price": 15,
       "image": "",
-      "price": 6
+      "placeId": "place_1781026725219"
     },
     {
-      "id": "prod_7",
-      "placeId": "place_3",
-      "name": "قهوة سادة عسكري مستجد ☕",
+      "id": "prod_1781026969716",
+      "name": "رغيف عيش",
+      "price": 2,
       "image": "",
-      "price": 10
+      "placeId": "place_1781026742712"
+    },
+    {
+      "id": "prod_1781038228798",
+      "name": "قرص طعميه عادي",
+      "price": 4,
+      "image": "",
+      "placeId": "place_1781026711871"
+    },
+    {
+      "id": "prod_1781038241924",
+      "name": "قرص طعميه كبير",
+      "price": 6,
+      "image": "",
+      "placeId": "place_1781026711871"
+    },
+    {
+      "id": "prod_1781038258046",
+      "name": "قرص طعميه محشيه",
+      "price": 6,
+      "image": "",
+      "placeId": "place_1781026711871"
+    },
+    {
+      "id": "prod_1781071048832",
+      "name": "ساندوتش بطاطس عادي",
+      "price": 16,
+      "image": "",
+      "placeId": "place_1781026711871"
+    },
+    {
+      "id": "prod_1781071093247",
+      "name": "ساندوتش بطاطس كاتشب",
+      "price": 18,
+      "image": "",
+      "placeId": "place_1781026711871"
+    },
+    {
+      "id": "prod_1781071391507",
+      "name": "كيس حلاوه طحينية",
+      "price": 5,
+      "image": "",
+      "placeId": "place_1781026725219"
+    },
+    {
+      "id": "prod_1781071902350",
+      "name": "جبنة كيري",
+      "price": 10,
+      "image": "",
+      "placeId": "place_1781026725219"
+    },
+    {
+      "id": "prod_1781071929094",
+      "name": "مولتو",
+      "price": 15,
+      "image": "",
+      "placeId": "place_1781026725219"
     }
   ],
-  "orders": {},
+  "orders": {
+    "2026-06-10": [
+      {
+        "id": "order_1781066504732_nk0u1",
+        "userName": "هشام بريك",
+        "items": [
+          {
+            "productId": "prod_1781038228798",
+            "name": "قرص طعميه عادي",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 4,
+            "quantity": 2,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 4,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 20,
+        "change": 4,
+        "totalCost": 16,
+        "timestamp": "2026-06-10T04:41:44.732Z"
+      },
+      {
+        "id": "order_1781070648768_bp1mo",
+        "userName": "فتوح",
+        "items": [
+          {
+            "productId": "prod_1781038258046",
+            "name": "قرص طعميه محشيه",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 6,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 2,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -10,
+        "totalCost": 10,
+        "timestamp": "2026-06-10T05:50:48.768Z"
+      },
+      {
+        "id": "order_1781071014152_h84z9",
+        "userName": "مايكل سامي حبشي",
+        "items": [
+          {
+            "productId": "prod_1781038258046",
+            "name": "قرص طعميه محشيه",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 6,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 2,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -10,
+        "totalCost": 10,
+        "timestamp": "2026-06-10T05:56:54.152Z"
+      },
+      {
+        "id": "order_1781071425618_v5djr",
+        "userName": "خالد جمال أمين",
+        "items": [
+          {
+            "productId": "prod_1781026824048",
+            "name": "ساندوتش فول",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 12,
+            "quantity": 1,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -12,
+        "totalCost": 12,
+        "timestamp": "2026-06-10T06:03:45.618Z"
+      },
+      {
+        "id": "order_1781071451780_ufucr",
+        "userName": "أحمد اشرف ذكى",
+        "items": [
+          {
+            "productId": "prod_1781071391507",
+            "name": "كيس حلاوه طحينية",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 5,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 1,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -7,
+        "totalCost": 7,
+        "timestamp": "2026-06-10T06:04:11.780Z"
+      },
+      {
+        "id": "order_1781071473956_deawm",
+        "userName": "مينا رفعت",
+        "items": [
+          {
+            "productId": "prod_1781038258046",
+            "name": "قرص طعميه محشيه",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 6,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 5,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026855694",
+            "name": "شيبسي",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 10,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026905337",
+            "name": "جهينا عصير",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 10,
+            "quantity": 1,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -36,
+        "totalCost": 36,
+        "timestamp": "2026-06-10T06:04:33.956Z"
+      },
+      {
+        "id": "order_1781071710588_8mtra",
+        "userName": "عمار  بن ياسر",
+        "items": [
+          {
+            "productId": "prod_1781038241924",
+            "name": "قرص طعميه كبير",
+            "placeId": "place_1781026711871",
+            "placeName": "مطعم نجف",
+            "price": 6,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026855694",
+            "name": "شيبسي",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 10,
+            "quantity": 1,
+            "notes": "صلصة حلوة او جبنة متبلة"
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 2,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -20,
+        "totalCost": 20,
+        "timestamp": "2026-06-10T06:08:30.588Z"
+      },
+      {
+        "id": "order_1781071962087_wy544",
+        "userName": "ك.ر.ي.م",
+        "items": [
+          {
+            "productId": "prod_1781071902350",
+            "name": "جبنة كيري",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 10,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026855694",
+            "name": "شيبسي",
+            "placeId": "place_1781026725219",
+            "placeName": "السوبر مركت",
+            "price": 10,
+            "quantity": 1,
+            "notes": ""
+          },
+          {
+            "productId": "prod_1781026969716",
+            "name": "رغيف عيش",
+            "placeId": "place_1781026742712",
+            "placeName": "فرن العيش",
+            "price": 2,
+            "quantity": 2,
+            "notes": ""
+          }
+        ],
+        "paidAmount": 0,
+        "change": -24,
+        "totalCost": 24,
+        "timestamp": "2026-06-10T06:12:42.087Z"
+      }
+    ]
+  },
   "balances": {
-    "هشام بريك": 0
+    "هشام بريك": 4,
+    "أحمد اشرف ذكى": -7,
+    "فتوح": -10,
+    "مايكل سامي حبشي": -10,
+    "خالد جمال أمين": -12,
+    "عمك": 0,
+    "مينا رفعت": -36,
+    "عمار  بن ياسر": -20,
+    "ك.ر.ي.م": -24,
+    "بودا": 0
   },
   "config": {
-    "manualOverride": true
+    "manualOverride": null
   }
 }
